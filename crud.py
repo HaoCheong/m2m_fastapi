@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from . import model, schema
+import model, schema
 
 def get_all_nodes(db: Session, limit: int = 10):
   return db.query(model.Node).limit(limit).all()
@@ -17,7 +17,7 @@ def create_node(db: Session, node: schema.NodeCreate):
 
   db.add(db_node)
   db.commit()
-  db.refresh()
+  db.refresh(db_node)
 
   return db_node
 
@@ -28,6 +28,7 @@ def delete_node(db: Session, node_id: str):
 
   db.delete(db_node)
   db.commit()
+  
   return {"Success": True}
 
 def update_node_by_node_id(db: Session, node_id: str, new_node: schema.NodeUpdate):
@@ -43,4 +44,6 @@ def update_node_by_node_id(db: Session, node_id: str, new_node: schema.NodeUpdat
   db.add(db_node)
   db.commit()
   db.refresh(db_node)
+
+  return {"Success": True}
 

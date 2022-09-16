@@ -3,8 +3,8 @@ from typing import List
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
-from . import crud, model, schema
-from .database import SessionLocal, engine
+import crud, model, schema
+from database import SessionLocal, engine
 
 model.Base.metadata.create_all(bind=engine)
 
@@ -18,7 +18,7 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/nodes/", response_model=schema.NodeRead_A)
+@app.get("/nodes/", response_model=List[schema.NodeRead_A])
 def get_all_nodes(limit: int = 10, db: Session = Depends(get_db)):
   nodes = crud.get_all_nodes(db, limit=limit)
   return nodes
@@ -37,7 +37,7 @@ def create_node(node: schema.NodeCreate, db: Session = Depends(get_db)):
 
 @app.delete("/nodes/{node_id}")
 def delete_node(node_id: str, db: Session = Depends(get_db)):
-  db_node = crud.get_node_via_node_id(db, node_id = node_id)
+  db_node = crud.get_node_by_node_id(db, node_id = node_id)
   if db_node is None:
     raise HTTPException(status_code=404, detail="Node not found")
 
