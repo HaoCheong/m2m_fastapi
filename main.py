@@ -54,4 +54,17 @@ def update_node_by_node_id(node_id: str, new_node: schema.NodeUpdate, db: Sessio
 
   return crud.update_node_by_node_id(db, node_id=node_id, new_node=new_node)
 
+# Assign Child Part to Parent Part
+@app.post("/nodes/{parent_id}/{child_id}")
+def add_child_node_to_parent_node(parent_id: str, child_id: str, db: Session = Depends(get_db)):
+  parent_node = crud.get_node_by_node_id(db, node_id = parent_id)
+  child_node = crud.get_node_by_node_id(db, node_id = child_id)
+
+  if not parent_node:
+    raise HTTPException(status_code=404, detail="Parent node not found")
+
+  if not child_node:
+    raise HTTPException(status_code=404, detail="Child node not found")
+
+  return crud.add_child_node_to_parent_node(db, child_id=child_id, parent_id=parent_id)
   

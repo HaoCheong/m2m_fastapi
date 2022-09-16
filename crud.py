@@ -51,3 +51,13 @@ def update_node_by_node_id(db: Session, node_id: str, new_node: schema.NodeUpdat
 
   return {"Success": True}
 
+def add_child_node_to_parent_node(db: Session, child_id: str, parent_id: str):
+    parent_node = db.query(model.Node).filter(model.Node.id == parent_id).first()
+    child_node = db.query(model.Node).filter(model.Node.id == child_id).first()
+
+    parent_node.child_nodes.append(child_node)
+
+    # db.add(parent_node)
+    db.commit()
+
+    return {"Success": True}

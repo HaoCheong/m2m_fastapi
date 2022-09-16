@@ -6,19 +6,18 @@ class NodeBase(BaseModel):
   desc: str
   number: int
 
+  class Config:
+    orm_mode = True
+
 # Read Node Schema, version A
 class NodeRead_A(NodeBase):
   id: str
 
-  class Config:
-    orm_mode = True
-
 # Read Node Schema, version B
 class NodeRead_B(NodeBase):
   id: str
-
-  class Config:
-    orm_mode = True
+  # parent_node: List[NodeRead_A]s
+  child_nodes: List[NodeRead_A]
 
 # Create Node Schema
 class NodeCreate(NodeBase):
