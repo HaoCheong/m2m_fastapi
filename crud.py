@@ -54,8 +54,10 @@ def update_node_by_node_id(db: Session, node_id: str, new_node: schema.NodeUpdat
 def assign_child_to_parent(db: Session, child_id: str, parent_id: str):
   db_parent_node = db.query(model.Node).filter(model.Node.id == parent_id).first()
   db_child_node = db.query(model.Node).filter(model.Node.id == child_id).first()
-
-  db_parent_node.child_nodes.append(db_child_node)
+  assoc = model.NodeAssociation(extra_num=5)
+  assoc.child = db_child_node
+  db_parent_node.children.append(assoc)
+  # db_parent_node.child_nodes.append(db_child_node)
   db.add(db_parent_node)
   db.commit()
 
