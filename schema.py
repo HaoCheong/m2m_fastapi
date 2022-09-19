@@ -16,7 +16,7 @@ class NodeRead_A(NodeBase):
 # Read Node Schema, version B
 class NodeRead_B(NodeBase):
   id: str
-
+  child_nodes: List[NodeRead_A]
   class Config:
     orm_mode = True
 
@@ -29,5 +29,3 @@ class NodeUpdate(NodeBase):
   id: Optional[str]
   desc: Optional[str]
   number: Optional[int]
-  
-
