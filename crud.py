@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 import model, schema
+from fastapi.encoders import jsonable_encoder
 
 # Get all the nodes, limited to 10
 def get_all_nodes(db: Session, limit: int = 10):
@@ -51,14 +52,20 @@ def update_node_by_node_id(db: Session, node_id: str, new_node: schema.NodeUpdat
 
   return {"Success": True}
 
-def assign_child_to_parent(db: Session, child_id: str, parent_id: str):
+def assign_child_to_parent(db: Session, child_id: str, parent_id: str, extra_num: int):
   db_parent_node = db.query(model.Node).filter(model.Node.id == parent_id).first()
   db_child_node = db.query(model.Node).filter(model.Node.id == child_id).first()
-  assoc = model.NodeAssociation(extra_num=5)
-  assoc.child = db_child_node
-  db_parent_node.children.append(assoc)
-  # db_parent_node.child_nodes.append(db_child_node)
+
+  db_parent_node.child_nodes.append(db_child_node)
+
   db.add(db_parent_node)
   db.commit()
+
+  db_row = db.query(model.NodeAssociation).filter(model.NodeAssociation.node_parent_id == parent_id).filter(model.NodeAssociation.node_child_id == child_id).first()
+  db_row.extra_num = extra_num
+
+  db.add(db_row)
+  db.commit()
+  db.refresh(db_row)
 
   return {"Success": True}

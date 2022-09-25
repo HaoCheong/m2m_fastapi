@@ -5,26 +5,18 @@ from pydantic import BaseModel
 class NodeBase(BaseModel):
   desc: str
   number: int
+  class Config:
+    orm_mode = True
 
 # Read Node Schema, version A
 class NodeRead_A(NodeBase):
   id: str
 
-  class Config:
-    orm_mode = True
-
-class NodeRead_C(NodeBase):
-  id: str
-  assign_qty: int
-  class Config:
-    orm_mode = True
-
 # Read Node Schema, version B
 class NodeRead_B(NodeBase):
   id: str
-  child_nodes: List[NodeRead_C]
-  class Config:
-    orm_mode = True
+  child_nodes: List[NodeRead_A]
+  parent_nodes: List[NodeRead_A]
 
 # Create Node Schema
 class NodeCreate(NodeBase):
